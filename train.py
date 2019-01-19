@@ -3,18 +3,19 @@ Function that can train our neural network
 
 """
 
-from myNet.tensor import Tensor
-from myNet.nn import NeuralNet
-from myNet.loss import Loss, MSE
-from myNet.optimizers import Optimizer, SGD
-from myNet.data import DataIterator, BatchIterator
+from tensor import Tensor
+from nn import NeuralNet
+from loss import Loss, MSE
+from optimizers import Optimizer, SGD
+from data import DataIterator, BatchIterator
+
 
 def train(net: NeuralNet,
     inputs: Tensor,
     targets: Tensor,
     num_epochs: int =5000,
     iterator: DataIterator= BatchIterator(),
-    loss = loss = MSE(),
+    loss = MSE(),
     Optimizer: Optimizer = SGD()
         ) -> None:
 

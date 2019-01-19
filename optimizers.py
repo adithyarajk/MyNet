@@ -3,7 +3,7 @@ Used to adjust paramerters of our networks based
 on gradient computed during backpropogation
 
 """
-from myNet.nn import NeuralNet
+from nn import NeuralNet
 
 class Optimizer:
 

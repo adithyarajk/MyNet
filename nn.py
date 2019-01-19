@@ -7,8 +7,8 @@ behaves a lot like a layer
 
 from typing import Sequence, Iterator, Tuple
 
-from myNet.tensor import Tensor
-from myNet.layers import Layer
+from tensor import Tensor
+from layers import Layer
 
 class NeuralNet:
     def __init__(self, layers: Sequence[Layer] ) -> None:

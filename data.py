@@ -7,7 +7,7 @@ tools fo iterating over data in batches
 from typing import Iterator, NamedTuple
 import numpy as numpy
 
-from myNet.tensor import Tensor
+from tensor import Tensor
 
 Batch = NamedTuple("Batch", [("inputs", Tensor)], ("targets"), Tensor)
 

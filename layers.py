@@ -9,7 +9,7 @@ and propogate error backwards
 from typing import Dict, Callable
 
 import numpy as np
-from myNet.tensor import Tensor
+from tensor import Tensor
 
 class Layer:
 
@@ -47,7 +47,7 @@ class Linear(Layer):
         self.inputs = inputs
         return inputs @ self.param["w"] + self.params["b"]
     
-    def backward(self, grad: Tensor) -> Tensor
+    def backward(self, grad: Tensor) -> Tensor:
         """
         if y = f(x) and x = a * b + c
         then dy/da = f'(x) * b
@@ -63,13 +63,13 @@ class Linear(Layer):
         self.grad["w"] = self.input.T @ grad
         return grad @ self.params["w"].T
 
-F = callable[[Tensor], Tensor]
+F = Callable[[Tensor], Tensor]
 
-class Activation(layer):
+class Activation(Layer):
     """
     Element wise operation to inputs
     """
-    def __init__(self, f: F, f_prime: F) -> none:
+    def __init__(self, f: F, f_prime: F) -> None:
         super().__init__()
         self.f = f
         self.f_prime = f_prime
@@ -93,4 +93,4 @@ def tanh_prime(x: Tensor) -> Tensor:
 class Tanh(Activation):
 
     def __init__(self):
-        super()__init__(tanh, tanh_prime)
+        super().__init__(tanh, tanh_prime)
