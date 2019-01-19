@@ -1,81 +1,82 @@
-"""
-Nerual network made up of layers
-Ech layers need to have its inputs foraward
-and propogate error backwards
 
 
 
-"""
 from typing import Dict, Callable
 
 import numpy as np
+
 from tensor import Tensor
 
+
 class Layer:
+    def __init__(self) -> None:
+        self.params: Dict[str, Tensor] = {}
+        self.grads: Dict[str, Tensor] = {}
 
-    def __init__(self)-> None:
-        self.param: Dict[str, Tensor] = {}
-        self.grad: Dict[str, Tensor] = {}
-
-
-    def forward(self, inputs: Tensor)-> Tensor:
+    def forward(self, inputs: Tensor) -> Tensor:
         """
-        Produce the outputs of the inputs
-
+        Produce the outputs corresponding to these inputs
         """
         raise NotImplementedError
-    def backward(self, grad: Tensor)-> Tensor:
+
+    def backward(self, grad: Tensor) -> Tensor:
         """
-        Backpropogates the gradient through the layer
+        Backpropagate this gradient through the layer
         """
         raise NotImplementedError
+
 
 class Linear(Layer):
     """
-    COmputes output= input @ W + b
+    computes output = inputs @ w + b
     """
     def __init__(self, input_size: int, output_size: int) -> None:
-        # inputs will be [batch_size, input_size]
-        # output wiill be [batch_size, outtu_size]
-        super.__init__()
-        self.param["w"] = np.random.randn(input_size,output_size)
-        self.param["b"] = np.random.randn(input_size)
+        # inputs will be (batch_size, input_size)
+        # outputs will be (batch_size, output_size)
+        super().__init__()
+        self.params["w"] = np.random.randn(input_size, output_size)
+        self.params["b"] = np.random.randn(output_size)
+
     def forward(self, inputs: Tensor) -> Tensor:
         """
-        output = input @ w + b
+        outputs = inputs @ w + b
         """
         self.inputs = inputs
-        return inputs @ self.param["w"] + self.params["b"]
-    
+        return inputs @ self.params["w"] + self.params["b"]
+
     def backward(self, grad: Tensor) -> Tensor:
         """
         if y = f(x) and x = a * b + c
         then dy/da = f'(x) * b
-        then dy/db = f'(x) * a
-        then dy/dc = f'(x) 
+        and dy/db = f'(x) * a
+        and dy/dc = f'(x)
 
         if y = f(x) and x = a @ b + c
-        then dy/da = f'(x) * b.T
-        then dy/db = a.T * f'(x) 
-        then dy/dc = f'(x) 
+        then dy/da = f'(x) @ b.T
+        and dy/db = a.T @ f'(x)
+        and dy/dc = f'(x)
         """
-        self.grad["b"] = np.sum(grad, axis=0)
-        self.grad["w"] = self.input.T @ grad
+        self.grads["b"] = np.sum(grad, axis=0)
+        self.grads["w"] = self.inputs.T @ grad
         return grad @ self.params["w"].T
+
 
 F = Callable[[Tensor], Tensor]
 
 class Activation(Layer):
     """
-    Element wise operation to inputs
+    An activation layer just applies a function
+    elementwise to its inputs
     """
     def __init__(self, f: F, f_prime: F) -> None:
         super().__init__()
         self.f = f
         self.f_prime = f_prime
+
     def forward(self, inputs: Tensor) -> Tensor:
-        self.input = inputs
-        return self.f(input)
+        self.inputs = inputs
+        return self.f(inputs)
+
     def backward(self, grad: Tensor) -> Tensor:
         """
         if y = f(x) and x = g(z)
@@ -83,14 +84,15 @@ class Activation(Layer):
         """
         return self.f_prime(self.inputs) * grad
 
-def tanh(x: Tensor)-> Tensor:
+
+def tanh(x: Tensor) -> Tensor:
     return np.tanh(x)
 
 def tanh_prime(x: Tensor) -> Tensor:
     y = tanh(x)
-    return 1-y**2
+    return 1 - y ** 2
+
 
 class Tanh(Activation):
-
     def __init__(self):
         super().__init__(tanh, tanh_prime)

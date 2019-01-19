@@ -19,13 +19,13 @@ class NeuralNet:
             input = layer.forward(inputs)
         return inputs
 
-    def backwards(sefl, grad: Tensor) -> Tensor:
+    def backward(self, grad: Tensor) -> Tensor:
         for layer in reversed(self.layers):
-            grad = layer.backwards(grad)
+            grad = layer.backward(grad)
         return grad
 
     def params_and_grad(self) -> Iterator[Tuple[Tensor, Tensor]]:
         for layer in self.layers:
-            for name, param in layer.param.items():
-                grad = layer.grad[name]
+            for name, param in layer.params.items():
+                grad = layer.grads[name]
                 yield param, grad

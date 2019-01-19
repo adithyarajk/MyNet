@@ -1,18 +1,18 @@
 """
-Well feed inputs to our netwokr into batches
-tools fo iterating over data in batches
+We will feed inputs to our network into batches
+tools for iterating over data in batches
 
 """
 
 from typing import Iterator, NamedTuple
-import numpy as numpy
+import numpy as np
 
 from tensor import Tensor
 
-Batch = NamedTuple("Batch", [("inputs", Tensor)], ("targets"), Tensor)
+Batch = NamedTuple("Batch", [("inputs", Tensor), ("targets", Tensor)])
 
 class DataIterator:
-    def __cal__(self, inputs: Tensor, targets: Tensor) -> Iterator:
+    def __cal__(self, inputs: Tensor, targets: Tensor) -> Iterator[Batch]:
         raise NotImplementedError
 
 class BatchIterator:
@@ -20,8 +20,8 @@ class BatchIterator:
         self.batch_size = batch_size
         self.shuffle = shuffle
 
-    def __cal__(self, inputs: Tensor, targets: Tensor) -> Iterator:
-        starts = np.arrange(0, len(inputs), self.batch_size)
+    def __call__(self, inputs: Tensor, targets: Tensor) -> Iterator[Batch]:
+        starts = np.arange(0, len(inputs), self.batch_size)
         if self.shuffle:
             np.random.shuffle(starts)
 
